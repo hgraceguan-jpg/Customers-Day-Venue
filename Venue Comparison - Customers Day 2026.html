@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Venue Comparison — Customers' Day 2026</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #1a1a2e; font-size: 14px; }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+    color: #fff; padding: 36px 40px 28px; margin-bottom: 0;
+  }
+  .page-header h1 { font-size: 26px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .page-header p { font-size: 13px; color: #a8b8d8; }
+  .event-strip {
+    display: flex; gap: 32px; flex-wrap: wrap;
+    background: rgba(255,255,255,0.07); border-radius: 8px;
+    padding: 14px 20px; margin-top: 18px;
+  }
+  .event-strip .ev-item { display: flex; flex-direction: column; gap: 2px; }
+  .ev-label { font-size: 10px; color: #7b93b8; text-transform: uppercase; letter-spacing: 0.06em; }
+  .ev-val { font-size: 13px; font-weight: 600; color: #e8edf5; }
+
+  /* ── QUICK SUMMARY TABLE ── */
+  .section { padding: 28px 40px; }
+  .section-title {
+    font-size: 13px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: #0f3460; border-left: 4px solid #0f3460;
+    padding-left: 10px; margin-bottom: 16px;
+  }
+
+  .summary-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .summary-table thead tr { background: #0f3460; color: #fff; }
+  .summary-table thead th {
+    padding: 11px 14px; text-align: left; font-weight: 600;
+    font-size: 12px; letter-spacing: 0.03em;
+  }
+  .summary-table tbody tr { border-bottom: 1px solid #e2e8f0; }
+  .summary-table tbody tr:hover { background: #f0f4ff; }
+  .summary-table tbody td { padding: 11px 14px; vertical-align: middle; }
+  .summary-table tbody tr:last-child { border-bottom: none; }
+
+  .tag {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 12px; letter-spacing: 0.04em; white-space: nowrap;
+  }
+  .tag-museum { background: #ede9fe; color: #5b21b6; }
+  .tag-digital { background: #dbeafe; color: #1d4ed8; }
+  .tag-party   { background: #ffedd5; color: #c2410c; }
+  .tag-sports  { background: #dcfce7; color: #15803d; }
+  .tag-bar     { background: #fee2e2; color: #991b1b; }
+  .tag-resto   { background: #fef3c7; color: #78350f; }
+
+  .badge-best {
+    display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px;
+    border-radius: 12px; background: #d1fae5; color: #065f46; margin-left: 6px;
+  }
+  .badge-pick {
+    display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px;
+    border-radius: 12px; background: #dbeafe; color: #1e40af; margin-left: 6px;
+  }
+
+  .price-cell { font-weight: 700; font-size: 14px; }
+  .price-top { color: #b91c1c; }
+  .price-high { color: #c2410c; }
+  .price-mid { color: #0f3460; }
+  .price-low { color: #065f46; }
+  .price-lowest { color: #15803d; }
+
+  .row-highlight-green td { background: #f0fdf4; }
+  .row-highlight-blue td  { background: #eff6ff; }
+
+  /* ── VENUE CARDS ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 0 40px 36px;
+  }
+  .venue-card {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+  .card-header {
+    padding: 18px 20px 14px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .card-type-tag {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; margin-bottom: 2px;
+  }
+  .card-venue-name { font-size: 17px; font-weight: 700; line-height: 1.2; }
+  .card-location {
+    font-size: 12px; margin-top: 2px;
+    display: flex; align-items: flex-start; gap: 5px;
+  }
+  .loc-icon { font-size: 12px; margin-top: 1px; flex-shrink: 0; }
+  .card-body { padding: 0 20px 18px; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+
+  .price-block { padding: 12px 16px; border-radius: 8px; margin: 0 20px; }
+  .price-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .price-main { font-size: 24px; font-weight: 800; line-height: 1; }
+  .price-note { font-size: 11px; margin-top: 3px; }
+
+  hr.card-divider { border: none; border-top: 1px solid #f0f0f0; }
+
+  .detail-section { display: flex; flex-direction: column; gap: 5px; }
+  .detail-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; margin-bottom: 2px;
+  }
+  .detail-row {
+    display: flex; justify-content: space-between;
+    align-items: baseline; gap: 8px; font-size: 12.5px;
+  }
+  .detail-key { color: #64748b; flex-shrink: 0; }
+  .detail-val { font-weight: 600; text-align: right; }
+
+  .incl-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .incl-list li { font-size: 12px; color: #374151; display: flex; gap: 6px; align-items: flex-start; }
+  .incl-list li::before { content: "✓"; font-weight: 700; flex-shrink: 0; margin-top: 0px; }
+  .addon-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .addon-list li { font-size: 12px; color: #374151; display: flex; gap: 6px; align-items: flex-start; }
+  .addon-list li::before { content: "+"; font-weight: 700; flex-shrink: 0; color: #64748b; }
+
+  .note-box {
+    font-size: 11.5px; padding: 9px 12px; border-radius: 6px;
+    border-left: 3px solid; line-height: 1.5;
+  }
+  .note-warn { background: #fffbeb; border-color: #f59e0b; color: #78350f; }
+  .note-info { background: #eff6ff; border-color: #3b82f6; color: #1e3a5f; }
+  .note-green { background: #f0fdf4; border-color: #22c55e; color: #14532d; }
+
+  /* ── THEME COLORS PER VENUE ── */
+  /* PAEC / Museum */
+  .theme-museum .card-header  { background: #5b21b6; color: #fff; }
+  .theme-museum .card-type-tag { color: #c4b5fd; }
+  .theme-museum .card-location { color: #ddd6fe; }
+  .theme-museum .price-block   { background: #f5f3ff; }
+  .theme-museum .price-label   { color: #7c3aed; }
+  .theme-museum .price-main    { color: #4c1d95; }
+  .theme-museum .price-note    { color: #7c3aed; }
+  .theme-museum .detail-label  { color: #7c3aed; }
+  .theme-museum .incl-list li::before { color: #7c3aed; }
+
+  /* STC / Digital */
+  .theme-digital .card-header  { background: #1d4ed8; color: #fff; }
+  .theme-digital .card-type-tag { color: #bfdbfe; }
+  .theme-digital .card-location { color: #dbeafe; }
+  .theme-digital .price-block   { background: #eff6ff; }
+  .theme-digital .price-label   { color: #1d4ed8; }
+  .theme-digital .price-main    { color: #1e3a8a; }
+  .theme-digital .price-note    { color: #1d4ed8; }
+  .theme-digital .detail-label  { color: #1d4ed8; }
+  .theme-digital .incl-list li::before { color: #1d4ed8; }
+
+  /* The Fun Roof / Party */
+  .theme-party .card-header    { background: #c2410c; color: #fff; }
+  .theme-party .card-type-tag  { color: #fed7aa; }
+  .theme-party .card-location  { color: #ffedd5; }
+  .theme-party .price-block    { background: #fff7ed; }
+  .theme-party .price-label    { color: #c2410c; }
+  .theme-party .price-main     { color: #7c2d12; }
+  .theme-party .price-note     { color: #c2410c; }
+  .theme-party .detail-label   { color: #c2410c; }
+  .theme-party .incl-list li::before { color: #c2410c; }
+
+  /* Pats Putts / Sports */
+  .theme-sports .card-header   { background: #166534; color: #fff; }
+  .theme-sports .card-type-tag { color: #bbf7d0; }
+  .theme-sports .card-location { color: #d1fae5; }
+  .theme-sports .price-block   { background: #f0fdf4; }
+  .theme-sports .price-label   { color: #166534; }
+  .theme-sports .price-main    { color: #14532d; }
+  .theme-sports .price-note    { color: #166534; }
+  .theme-sports .detail-label  { color: #166534; }
+  .theme-sports .incl-list li::before { color: #166534; }
+
+  /* Matchpoint / Sports Bar */
+  .theme-bar .card-header   { background: #991b1b; color: #fff; }
+  .theme-bar .card-type-tag { color: #fecaca; }
+  .theme-bar .card-location { color: #fee2e2; }
+  .theme-bar .price-block   { background: #fff1f2; }
+  .theme-bar .price-label   { color: #991b1b; }
+  .theme-bar .price-main    { color: #7f1d1d; }
+  .theme-bar .price-note    { color: #991b1b; }
+  .theme-bar .detail-label  { color: #991b1b; }
+  .theme-bar .incl-list li::before { color: #991b1b; }
+
+  /* Lobby 385 / Restaurant */
+  .theme-resto .card-header   { background: #78350f; color: #fff; }
+  .theme-resto .card-type-tag { color: #fcd34d; }
+  .theme-resto .card-location { color: #fef3c7; }
+  .theme-resto .price-block   { background: #fffbeb; }
+  .theme-resto .price-label   { color: #92400e; }
+  .theme-resto .price-main    { color: #78350f; }
+  .theme-resto .price-note    { color: #92400e; }
+  .theme-resto .detail-label  { color: #92400e; }
+  .theme-resto .incl-list li::before { color: #d97706; }
+
+  /* ── FOOTER ── */
+  .page-footer {
+    background: #1a1a2e; color: #7b93b8;
+    text-align: center; font-size: 11px;
+    padding: 16px 40px; letter-spacing: 0.03em;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    padding: 0 40px 8px; align-items: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #374151; }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 3px; }
+
+  @media print {
+    body { background: #fff; }
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── TOGGLE DETAIL ROWS ── */
+  .detail-expand-row { display: none; background: #f8fafc; }
+  .detail-expand-row.open { display: table-row; }
+  .detail-expand-cell { padding: 0 !important; border-bottom: 2px solid #e2e8f0; }
+  .detail-panel {
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .detail-panel .card-body {
+    padding: 0; flex: none; display: block;
+  }
+  .detail-panel .card-body .detail-section { margin-bottom: 12px; }
+  .detail-panel .card-body hr.card-divider { margin: 8px 0; }
+  .btn-toggle {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-top: 4px; padding: 4px 10px;
+    font-size: 11px; font-weight: 700; border-radius: 4px;
+    border: 1.5px solid currentColor; cursor: pointer;
+    background: transparent; transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+  .btn-toggle:hover { opacity: 0.75; }
+  .btn-toggle .arrow { transition: transform 0.2s; display: inline-block; }
+  .btn-toggle.open .arrow { transform: rotate(180deg); }
+
+  </style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <p style="font-size:11px;color:#7b93b8;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Infosoft Consulting Corporation</p>
+  <h1>Customers' Day 2026 — Venue Comparison</h1>
+  <p>Supplier quotation summary prepared for evaluation and selection</p>
+  <div class="event-strip">
+    <div class="ev-item"><span class="ev-label">Event Date</span><span class="ev-val">July 23 or July 30, 2026</span></div>
+    <div class="ev-item"><span class="ev-label">Day</span><span class="ev-val">Thursday (Weekday)</span></div>
+    <div class="ev-item"><span class="ev-label">Time</span><span class="ev-val">1:00 PM – 6:00 PM</span></div>
+    <div class="ev-item"><span class="ev-label">Duration</span><span class="ev-val">5 Hours</span></div>
+    <div class="ev-item"><span class="ev-label">Headcount</span><span class="ev-val">100 Pax</span></div>
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="section" style="padding-bottom:8px;">
+  <div class="section-title">Venue Categories</div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-swatch" style="background:#5b21b6;"></div> Museum / Immersive Experience (PAEC)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#1d4ed8;"></div> Digital Art Museum (Space &amp; Time Cube)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#c2410c;"></div> Party / Events Venue (The Fun Roof)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#166534;"></div> Sports / Recreation (Pats Putts)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#991b1b;"></div> Sports Bar + Events (Matchpoint)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#78350f;"></div> Restaurant / Events Venue (Lobby 385)</div>
+  </div>
+</div>
+
+<!-- QUICK SUMMARY TABLE -->
+<div class="section" style="padding-top:8px;">
+  <div class="section-title">At-a-Glance Comparison</div>
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th style="width:5%">#</th>
+        <th style="width:20%">Venue</th>
+        <th style="width:13%">Location</th>
+        <th style="width:14%">Total Cost</th>
+        <th style="width:13%">Initial Outlay</th>
+        <th style="width:9%">Security Dep.</th>
+        <th style="width:9%">Duration</th>
+        <th style="width:12%">Highlights</th>
+        <th style="width:5%"></th>
+      </tr>
+    </thead>
+    <tbody><tbody>
+      <tr>
+        <td><span class="tag tag-bar">1</span></td>
+        <td>
+          <strong>Matchpoint — Full Package</strong><br>
+          <span style="font-size:11px;color:#64748b;">Trafford Events + Bernabeu Bar · Sports Bar</span>
+        </td>
+        <td style="font-size:12px;">SM Center Shaw, 514 Shaw Blvd, Pleasant Hills, Mandaluyong City — 3rd Level Rooftop</td>
+        <td class="price-cell" style="color:#991b1b;">₱229,286.40<br><span style="font-size:10px;font-weight:400;color:#64748b;">VAT + SC inclusive; consumable-based</span></td>
+        <td style="font-weight:600;">₱114,643.20<br><span style="font-size:10px;font-weight:400;color:#64748b;">50% DP upon confirmation</span></td>
+        <td style="font-weight:600;">—<br><span style="font-size:10px;font-weight:400;color:#64748b;">None stated</span></td>
+        <td>5 hours<br><span style="font-size:10px;color:#64748b;">+2 hrs ingress/egress free</span></td>
+        <td style="font-size:12px;">Full bar access + games (Billiards, Foosball, Beerpong); LED wall + stage included</td>
+        <td style="vertical-align:middle;padding:8px 10px;">
+          <button class="btn-toggle" style="color:#991b1b;border-color:#991b1b;" onclick="toggleDetail('1',this)">
+            Full Details <span class="arrow">&#9660;</span>
+          </button>
+        </td>
+      </tr>
+      <tr class="detail-expand-row" id="detail-1">
+        <td class="detail-expand-cell" colspan="9">
+          <div class="detail-panel" style="border-left:4px solid #991b1b;">
+            <div class="card-body">
+
+      <div class="note-box note-info">
+        ℹ Consumable-based pricing. LED Panel Wall (₱15,000) is included. Free 2 hours for ingress/egress — total 7-hour block for 5 hours of event use.
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Pros &amp; Cons</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:5px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10003; Pros</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Elevated stage &mdash; supports formal program flow and presentations</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>LED panel wall + professional sound system included</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Full-service bar and game areas (Bernabeu) for post-program</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Spacious venue with room for 100+ pax comfortably</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Free 2-hour ingress/egress &mdash; plenty of setup time</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Food is consumable &mdash; flexible spend based on actual consumption</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Good parking area with direct elevator/escalator to 3rd-level rooftop</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10007; Cons</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Not AI-related in design or theme</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Consumable cost unpredictable &mdash; final bill may vary</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Bar-heavy atmosphere may feel informal for corporate events</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>PWD accessibility concern (3rd-level rooftop)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Cost Breakdown</div>
+        <div class="detail-row"><span class="detail-key">Consumable Rate (food &amp; drinks)</span><span class="detail-val">₱162,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Venue Rental (5 hours)</span><span class="detail-val">₱18,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Consumable subtotal</span><span class="detail-val">₱180,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">LED Panel Wall</span><span class="detail-val">₱15,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Sub-total</span><span class="detail-val">₱195,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Service Charge (6% on consumables)</span><span class="detail-val">₱9,720.00</span></div>
+        <div class="detail-row"><span class="detail-key">12% VAT</span><span class="detail-val">₱24,566.40</span></div>
+        <div class="detail-row" style="border-top:1px solid #e2e8f0;padding-top:5px;margin-top:2px;">
+          <span class="detail-key" style="font-weight:700;">Grand Total</span>
+          <span class="detail-val" style="font-size:14px;">₱229,286.40</span>
+        </div>
+        <div class="detail-row"><span class="detail-key">50% Down Payment</span><span class="detail-val">₱114,643.20</span></div>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Inclusions</div>
+        <ul class="incl-list">
+          <li>Elevated Main Stage + Dynamic Lighting</li>
+          <li>Professional Sound System + Tech-Ready Setup</li>
+          <li>Full-Service Bar Access (Bernabeu Bar)</li>
+          <li>Billiards, Foosball, Bar Seating</li>
+          <li>Dual TV Displays + Beerpong Setup</li>
+          <li>LED Panel Wall — full event</li>
+          <li>Free 2-hour ingress/egress (7-hr total block)</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Terms</div>
+        <ul class="incl-list">
+          <li>50% DP upon confirmation of event</li>
+          <li>Full payment: <strong>7 days</strong> before event (cash/check/bank transfer)</li>
+          <li>Credit card: <strong>2 weeks</strong> before event date</li>
+          <li>Additional charges: settled during the event</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Details</div>
+        <div class="detail-row"><span class="detail-key">Account Name</span><span class="detail-val" style="font-size:11px;">Kevin James Olayvar</span></div>
+        <div class="detail-row"><span class="detail-key">Bank</span><span class="detail-val">BDO SM Center Shaw</span></div>
+        <div class="detail-row"><span class="detail-key">Account No.</span><span class="detail-val">010980077249</span></div>
+        <div class="detail-row"><span class="detail-key">Email</span><span class="detail-val" style="font-size:11px;">reservations@matchpoint-ph.com</span></div>
+      </div>
+
+    </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-bar">2</span></td>
+        <td>
+          <strong>Matchpoint — Trafford Only</strong><br>
+          <span style="font-size:11px;color:#64748b;">Trafford Events Area · Sports Bar</span>
+        </td>
+        <td style="font-size:12px;">SM Center Shaw, 514 Shaw Blvd, Pleasant Hills, Mandaluyong City — 3rd Level Rooftop</td>
+        <td class="price-cell price-low">₱111,238.40<br><span style="font-size:10px;font-weight:400;color:#64748b;">VAT + SC inclusive; consumable-based</span></td>
+        <td style="font-weight:600;">₱55,619.20<br><span style="font-size:10px;font-weight:400;color:#64748b;">50% DP upon confirmation</span></td>
+        <td style="font-weight:600;">—<br><span style="font-size:10px;font-weight:400;color:#64748b;">None stated</span></td>
+        <td>5 hours<br><span style="font-size:10px;color:#64748b;">+2 hrs ingress/egress free</span></td>
+        <td style="font-size:12px;">Stage + sound + dynamic lighting; LED wall included; no bar games area</td>
+        <td style="vertical-align:middle;padding:8px 10px;">
+          <button class="btn-toggle" style="color:#991b1b;border-color:#991b1b;" onclick="toggleDetail('2',this)">
+            Full Details <span class="arrow">&#9660;</span>
+          </button>
+        </td>
+      </tr>
+      <tr class="detail-expand-row" id="detail-2">
+        <td class="detail-expand-cell" colspan="9">
+          <div class="detail-panel" style="border-left:4px solid #991b1b;">
+            <div class="card-body">
+
+      <div class="note-box note-info">
+        ℹ Trafford Events area only — no Bernabeu Bar access. Stage, sound, and LED wall are included. Same payment terms as Option 6A.
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Pros &amp; Cons</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:5px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10003; Pros</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Stage, sound, and LED wall still included &mdash; full program support</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Focused events space &mdash; fewer bar distractions during program</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>~&#8369;118k savings vs. Option 1 (Full Package)</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10007; Cons</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>No Bernabeu Bar or games area &mdash; less post-program fun</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Limited F&amp;B variety without bar access</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Not AI-related in design or theme</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Same PWD access and parking concerns as Option 9</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Cost Breakdown</div>
+        <div class="detail-row"><span class="detail-key">Consumable Rate (food &amp; drinks)</span><span class="detail-val">₱72,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Venue Rental (5 hours)</span><span class="detail-val">₱8,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Consumable subtotal</span><span class="detail-val">₱80,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">LED Panel Wall</span><span class="detail-val">₱15,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Sub-total</span><span class="detail-val">₱95,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Service Charge (6% on consumables)</span><span class="detail-val">₱4,320.00</span></div>
+        <div class="detail-row"><span class="detail-key">12% VAT</span><span class="detail-val">₱11,918.40</span></div>
+        <div class="detail-row" style="border-top:1px solid #e2e8f0;padding-top:5px;margin-top:2px;">
+          <span class="detail-key" style="font-weight:700;">Grand Total</span>
+          <span class="detail-val" style="font-size:14px;">₱111,238.40</span>
+        </div>
+        <div class="detail-row"><span class="detail-key">50% Down Payment</span><span class="detail-val">₱55,619.20</span></div>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Inclusions</div>
+        <ul class="incl-list">
+          <li>Elevated Main Stage + Dynamic Lighting</li>
+          <li>Professional Sound System + Tech-Ready Setup</li>
+          <li>LED Panel Wall — full event</li>
+          <li>Free 2-hour ingress/egress (7-hr total block)</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Not Included (vs. Option 6A)</div>
+        <ul class="addon-list">
+          <li>Bernabeu Bar area access</li>
+          <li>Billiards, Foosball, Bar Seating</li>
+          <li>Dual TV Displays + Beerpong Setup</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Terms</div>
+        <ul class="incl-list">
+          <li>50% DP upon confirmation of event</li>
+          <li>Full payment: <strong>7 days</strong> before event (cash/check/bank transfer)</li>
+          <li>Credit card: <strong>2 weeks</strong> before event date</li>
+          <li>Additional charges: settled during the event</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Details</div>
+        <div class="detail-row"><span class="detail-key">Account Name</span><span class="detail-val" style="font-size:11px;">Kevin James Olayvar</span></div>
+        <div class="detail-row"><span class="detail-key">Bank</span><span class="detail-val">BDO SM Center Shaw</span></div>
+        <div class="detail-row"><span class="detail-key">Account No.</span><span class="detail-val">010980077249</span></div>
+        <div class="detail-row"><span class="detail-key">Email</span><span class="detail-val" style="font-size:11px;">reservations@matchpoint-ph.com</span></div>
+      </div>
+
+    </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-resto">3</span></td>
+        <td>
+          <strong>Lobby 385</strong><br>
+          <span style="font-size:11px;color:#64748b;">Restaurant / Events Venue — Chef Kalel Chan</span>
+        </td>
+        <td style="font-size:12px;">385 P. Guevarra St, San Juan, 1550 Metro Manila</td>
+        <td class="price-cell" style="color:#78350f;">₱200,000<br><span style="font-size:10px;font-weight:400;color:#64748b;">Consumable rate; VAT status TBC ⚠</span></td>
+        <td style="font-weight:600;">₱100,000<br><span style="font-size:10px;font-weight:400;color:#64748b;">50% DP of consumable amount</span></td>
+        <td style="font-weight:600;">—<br><span style="font-size:10px;font-weight:400;color:#64748b;">None stated</span></td>
+        <td>5 hours</td>
+        <td style="font-size:12px;">Buffet, plated, à la carte or family style; customized set menus available</td>
+        <td style="vertical-align:middle;padding:8px 10px;">
+          <button class="btn-toggle" style="color:#78350f;border-color:#78350f;" onclick="toggleDetail('3',this)">
+            Full Details <span class="arrow">&#9660;</span>
+          </button>
+        </td>
+      </tr>
+      <tr class="detail-expand-row" id="detail-3">
+        <td class="detail-expand-cell" colspan="9">
+          <div class="detail-panel" style="border-left:4px solid #78350f;">
+            <div class="card-body">
+
+      <div class="note-box note-warn">
+        &#9888; VAT not specified in the quotation. Confirm whether &#8369;200,000 is VAT-inclusive or VAT-exclusive before proceeding.
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Pros &amp; Cons</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:5px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10003; Pros</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Award-winning Chef Kalel Chan &mdash; elevated culinary reputation</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Upscale fine-casual setting &mdash; looks high-class for its price point</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Flexible service formats &mdash; buffet, plated, family style, &agrave; la carte</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Highly reviewed by Spot.ph, Philstar, Manila Bulletin &mdash; trending venue</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Good parking space &mdash; can park inside Guevarra St. compound</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10007; Cons</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>No AV, stage, or sound system &mdash; must be arranged separately</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>No DJ or entertainment package included</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Smaller space than Matchpoint &mdash; more intimate but less flexible</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Not AI-related in design or theme</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Cost Breakdown</div>
+        <div class="detail-row"><span class="detail-key">Consumable Rate (weekday)</span><span class="detail-val">&#8369;200,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">VAT (12%)</span><span class="detail-val">TBC &#9888;</span></div>
+        <div class="detail-row"><span class="detail-key">Capacity</span><span class="detail-val">100 &ndash; 110 guests</span></div>
+        <div class="detail-row" style="border-top:1px solid #e2e8f0;padding-top:5px;margin-top:2px;">
+          <span class="detail-key" style="font-weight:700;">50% Deposit (to confirm booking)</span>
+          <span class="detail-val" style="font-size:14px;">&#8369;100,000.00</span>
+        </div>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Event Service Options</div>
+        <ul class="incl-list">
+          <li>Buffet service</li>
+          <li>Plated service</li>
+          <li>&Agrave; la carte</li>
+          <li>Family style</li>
+          <li>Customized set menus and proposals</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Reservation Policy</div>
+        <ul class="incl-list">
+          <li>50% deposit of consumable amount required to confirm booking</li>
+          <li>Deposit settled <strong>1&ndash;2 weeks</strong> prior to event (depending on space reserved)</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">To Confirm</div>
+        <ul class="addon-list">
+          <li>VAT-inclusive or exclusive? <span style="color:#b91c1c;font-weight:700;">[CRITICAL]</span></li>
+          <li>Specific space / room reserved</li>
+          <li>AV equipment, stage, PA system availability</li>
+          <li>Full payment deadline</li>
+          <li>Contact details and bank information</li>
+        </ul>
+      </div>
+
+    </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-digital">4</span></td>
+        <td>
+          <strong>STC – SM North EDSA</strong><br>
+          <span style="font-size:11px;color:#64748b;">Space &amp; Time Cube</span>
+        </td>
+        <td style="font-size:12px;">SM City North EDSA, EDSA cor. North Ave., Quezon City</td>
+        <td class="price-cell price-low">₱75,000<br><span style="font-size:10px;font-weight:400;color:#64748b;">+₱9,000 VAT if invoiced</span></td>
+        <td style="font-weight:600;">₱37,500<br><span style="font-size:10px;font-weight:400;color:#64748b;">50% DP (non-refundable)</span></td>
+        <td style="font-weight:600;">—<br><span style="font-size:10px;font-weight:400;color:#64748b;">None stated</span></td>
+        <td>5 hours</td>
+        <td style="font-size:12px;">Digital art; 9D ride; holograms — no food included</td>
+        <td style="vertical-align:middle;padding:8px 10px;">
+          <button class="btn-toggle" style="color:#1e40af;border-color:#1e40af;" onclick="toggleDetail('4',this)">
+            Full Details <span class="arrow">&#9660;</span>
+          </button>
+        </td>
+      </tr>
+      <tr class="detail-expand-row" id="detail-4">
+        <td class="detail-expand-cell" colspan="9">
+          <div class="detail-panel" style="border-left:4px solid #1e40af;">
+            <div class="card-body">
+
+      <div class="note-box note-info">
+        ℹ By default, only an Acknowledgment Receipt is provided. A 12% charge (₱9,000) applies only if a Sales Invoice is requested.
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Pros &amp; Cons</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:5px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10003; Pros</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>AI-related theme &mdash; immersive digital art aligns with tech brand</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Good for guest engagement and enjoyment &mdash; interactive activities</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10007; Cons</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Many rooms but not spacious enough to hold a single meeting/event venue</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>LED walls not included &mdash; separate payment required</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Food &amp; entertainment must be arranged separately outside the venue</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Parking inside the mall &mdash; may tire guests (5th floor, more walking)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Breakdown</div>
+        <div class="detail-row"><span class="detail-key">Exclusive package rate</span><span class="detail-val">₱75,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Max capacity</span><span class="detail-val">200 pax</span></div>
+        <div class="detail-row"><span class="detail-key">12% VAT (if invoiced)</span><span class="detail-val">₱9,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">50% Down Payment (non-refundable)</span><span class="detail-val">₱37,500.00</span></div>
+        <div class="detail-row"><span class="detail-key">Remaining balance</span><span class="detail-val">₱37,500.00</span></div>
+        <div class="detail-row" style="border-top:1px solid #e2e8f0;padding-top:5px;margin-top:2px;">
+          <span class="detail-key" style="font-weight:700;">Balance settled</span>
+          <span class="detail-val">Immediately after event</span>
+        </div>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Inclusions</div>
+        <ul class="incl-list">
+          <li>5-hour exclusive access (weekday rate)</li>
+          <li>Sensory games</li>
+          <li>LED and 3D holographic displays</li>
+          <li>Light installations</li>
+          <li>9D ride experience</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Terms &amp; Reminders</div>
+        <ul class="incl-list">
+          <li>Book at least <strong>1 month</strong> in advance</li>
+          <li>50% DP is <strong>non-refundable</strong>, due at least 2 weeks before event</li>
+          <li>Balance settled immediately after the visit</li>
+          <li>Cash, bank deposit, or bank transfer <strong>only</strong></li>
+          <li>Cancellation within 1 week = forfeiture of down payment</li>
+          <li>No refunds for no-shows or unused tickets</li>
+          <li>Parking fees for buses are NOT covered</li>
+        </ul>
+      </div>
+
+    </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-sports">5</span></td>
+        <td>
+          <strong>Pats Putts</strong><br>
+          <span style="font-size:11px;color:#64748b;">Mini Golf &amp; Games Venue</span>
+        </td>
+        <td style="font-size:12px;">Shangri-La Plaza Mall, Shaw Blvd., Mandaluyong City</td>
+        <td class="price-cell price-lowest">₱29,990<br><span style="font-size:10px;font-weight:400;color:#64748b;">Venue only; food not included</span></td>
+        <td style="font-weight:600;">₱14,995<br><span style="font-size:10px;font-weight:400;color:#64748b;">50% DP to reserve</span></td>
+        <td style="font-weight:600;">—<br><span style="font-size:10px;font-weight:400;color:#64748b;">None stated</span></td>
+        <td>5 hours</td>
+        <td style="font-size:12px;">Mini golf + board games; BYOF with ₱5k corkage</td>
+        <td style="vertical-align:middle;padding:8px 10px;">
+          <button class="btn-toggle" style="color:#166534;border-color:#166534;" onclick="toggleDetail('5',this)">
+            Full Details <span class="arrow">&#9660;</span>
+          </button>
+        </td>
+      </tr>
+      <tr class="detail-expand-row" id="detail-5">
+        <td class="detail-expand-cell" colspan="9">
+          <div class="detail-panel" style="border-left:4px solid #166534;">
+            <div class="card-body">
+
+      <div class="note-box note-warn">
+        ⚠ Food is NOT included. Add ₱5,000 corkage if bringing your own food, or order from Pats Putts' food packages. LED walls are not allowed — no electrical provision available.
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Pros &amp; Cons</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:5px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10003; Pros</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Neon lights are attractive and lively &mdash; great visual ambiance</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Game room included &mdash; natural icebreaker for team bonding</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Diner on-site for food orders &mdash; no need to go outside</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Most affordable base price of all options (&#8369;29,990)</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10007; Cons</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Food not included &mdash; &#8369;5,000 corkage if bringing own food from a caterer</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>LED walls not allowed &mdash; no electrical provision available</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Mini golf may divide crowd &mdash; not everyone engages equally</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Spacious but harder to set up a formal program in the layout presented</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Parking inside Shangri-La mall &mdash; mall navigation required</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Breakdown (5 Hours, Weekday)</div>
+        <div class="detail-row"><span class="detail-key">Base rate — 3 hrs (weekday)</span><span class="detail-val">₱19,990.00</span></div>
+        <div class="detail-row"><span class="detail-key">Extension: +2 hrs (₱5,000/hr)</span><span class="detail-val">₱10,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Venue total (5 hours)</span><span class="detail-val">₱29,990.00</span></div>
+        <div class="detail-row"><span class="detail-key">Corkage (own food, optional)</span><span class="detail-val">₱5,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Max capacity</span><span class="detail-val">150 pax</span></div>
+        <div class="detail-row"><span class="detail-key">50% DP to reserve</span><span class="detail-val">₱14,995.00</span></div>
+        <div class="detail-row" style="border-top:1px solid #e2e8f0;padding-top:5px;margin-top:2px;">
+          <span class="detail-key" style="font-weight:700;">Total with corkage</span>
+          <span class="detail-val" style="font-size:14px;">₱34,990.00</span>
+        </div>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Inclusions (Venue Only)</div>
+        <ul class="incl-list">
+          <li>Exclusive use of entire venue</li>
+          <li>Mini golf courses and equipment</li>
+          <li>Game room area (board games)</li>
+          <li>Dining area access</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Rate Reference</div>
+        <div class="detail-row"><span class="detail-key">Weekday base (3 hrs)</span><span class="detail-val">₱19,990</span></div>
+        <div class="detail-row"><span class="detail-key">Weekend base (3 hrs)</span><span class="detail-val">₱24,990</span></div>
+        <div class="detail-row"><span class="detail-key">Extra hr (weekday)</span><span class="detail-val">₱5,000/hr</span></div>
+        <div class="detail-row"><span class="detail-key">Extra hr (weekend)</span><span class="detail-val">₱6,000/hr</span></div>
+        <div class="detail-row"><span class="detail-key">Corkage (own food)</span><span class="detail-val">₱5,000</span></div>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Terms &amp; Reminders</div>
+        <ul class="incl-list">
+          <li>50% DP required to reserve the date</li>
+          <li>Full payment at least <strong>1 week</strong> before event</li>
+          <li>Accepted: Cash, GCash, bank transfer <strong>only</strong></li>
+          <li><strong>Credit card payments are NOT allowed</strong></li>
+          <li>Both July 23 and July 30 are currently available</li>
+          <li>Partial venue rental not available — exclusive use only</li>
+          <li>LED walls not allowed (no electrical provision)</li>
+          <li>Government ID of signatory required for contract</li>
+        </ul>
+      </div>
+
+    </div>
+          </div>
+        </td>
+      </tr>
+      <tr class="row-highlight-blue">
+        <td><span class="tag tag-party">6</span></td>
+        <td>
+          <strong>The Fun Roof</strong><br>
+          <span style="font-size:11px;color:#64748b;">Events / Party Venue</span>
+        </td>
+        <td style="font-size:12px;">4th Floor, Matheus Building, 5382 General Luna St., Poblacion, Makati City 1210</td>
+        <td class="price-cell price-mid">₱300,000<br><span style="font-size:10px;font-weight:400;color:#64748b;">VAT status not confirmed</span></td>
+        <td style="font-weight:600;">₱20,000<br><span style="font-size:10px;font-weight:400;color:#64748b;">Security deposit only</span></td>
+        <td style="font-weight:600;">₱20,000<br><span style="font-size:10px;font-weight:400;color:#64748b;">Refundable</span></td>
+        <td>5 hours</td>
+        <td style="font-size:12px;">Buffet + open bar + DJ + games + PA system all-in</td>
+        <td style="vertical-align:middle;padding:8px 10px;">
+          <button class="btn-toggle" style="color:#9a3412;border-color:#9a3412;" onclick="toggleDetail('6',this)">
+            Full Details <span class="arrow">&#9660;</span>
+          </button>
+        </td>
+      </tr>
+      <tr class="detail-expand-row" id="detail-6">
+        <td class="detail-expand-cell" colspan="9">
+          <div class="detail-panel" style="border-left:4px solid #9a3412;">
+            <div class="card-body">
+
+      <div class="note-box note-warn">
+        ⚠ VAT not specified in the quotation. Clarify with supplier whether the ₱300,000 is VAT-inclusive or exclusive before finalizing.
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Pros &amp; Cons</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:5px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10003; Pros</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Truly all-in: buffet, 2-hr open bar, DJ, games &amp; PA all included</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Rooftop with panoramic city views &mdash; trendy Poblacion location</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Most affordable option with the fullest inclusions in the list</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Fun games (curling, batting cage, carousel) &mdash; great for bonding</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>LED walls included</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10007; Cons</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Rooftop = weather risk &mdash; no complete enclosure confirmed</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Poblacion congestion; limited parking &mdash; may feel too bar-party for corporate</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Neon-lit ambiance looks better in the evening &mdash; may not suit morning events</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Breakdown</div>
+        <div class="detail-row"><span class="detail-key">Package rate (100 pax)</span><span class="detail-val">₱300,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Security deposit</span><span class="detail-val">₱20,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">VAT (if applicable)</span><span class="detail-val">TBC</span></div>
+        <div class="detail-row" style="border-top:1px solid #e2e8f0;padding-top:5px;margin-top:2px;">
+          <span class="detail-key" style="font-weight:700;">Initial outlay (at minimum)</span>
+          <span class="detail-val" style="font-size:14px;">₱20,000.00 deposit</span>
+        </div>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Inclusions (All-In Package)</div>
+        <ul class="incl-list">
+          <li>Exclusive venue use — 5 hours</li>
+          <li><strong>Buffet</strong> for 100 pax</li>
+          <li><strong>Open bar</strong>: unlimited cocktails &amp; shooters (2 hours)</li>
+          <li><strong>Unlimited games</strong> for 100 pax</li>
+          <li><strong>DJ</strong> for 2 hours</li>
+          <li>PA system: 1 wired mic + 1 wireless mic</li>
+          <li>1-hour ingress + 1-hour egress provision</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Available Add-Ons</div>
+        <ul class="addon-list">
+          <li>LED wall (11 ft × 6 ft): <strong>₱10,000</strong></li>
+          <li>Hourly extension: <strong>₱75,000/hr</strong></li>
+          <li>Additional guests: <strong>₱2,300/person</strong> (fully consumable)</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Terms &amp; Notes</div>
+        <ul class="incl-list">
+          <li>Security deposit of ₱20,000 refunded within <strong>7 days</strong> post-inspection</li>
+          <li>Rate subject to change if heavy setup is required</li>
+          <li>Exact location and full payment terms to be confirmed with supplier</li>
+        </ul>
+      </div>
+
+    </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-digital">7</span></td>
+        <td>
+          <strong>STC – S Maison</strong><br>
+          <span style="font-size:11px;color:#64748b;">Space &amp; Time Cube</span>
+        </td>
+        <td style="font-size:12px;">G/F S Maison Mall, Seaside Blvd., Coral Way, Pasay City</td>
+        <td class="price-cell price-low">₱125,000<br><span style="font-size:10px;font-weight:400;color:#64748b;">+₱15,000 VAT if invoiced</span></td>
+        <td style="font-weight:600;">₱62,500<br><span style="font-size:10px;font-weight:400;color:#64748b;">50% DP (non-refundable)</span></td>
+        <td style="font-weight:600;">—<br><span style="font-size:10px;font-weight:400;color:#64748b;">None stated</span></td>
+        <td>5 hours</td>
+        <td style="font-size:12px;">Same as STC NEDA + premium Conrad Hotel address</td>
+        <td style="vertical-align:middle;padding:8px 10px;">
+          <button class="btn-toggle" style="color:#1e40af;border-color:#1e40af;" onclick="toggleDetail('7',this)">
+            Full Details <span class="arrow">&#9660;</span>
+          </button>
+        </td>
+      </tr>
+      <tr class="detail-expand-row" id="detail-7">
+        <td class="detail-expand-cell" colspan="9">
+          <div class="detail-panel" style="border-left:4px solid #1e40af;">
+            <div class="card-body">
+
+      <div class="note-box note-info">
+        ℹ By default, only an Acknowledgment Receipt is provided. A 12% charge (₱15,000) applies only if a Sales Invoice is requested.
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Pros &amp; Cons</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:5px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10003; Pros</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>AI-related theme &mdash; immersive digital art aligns with tech brand</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Good for guest engagement and enjoyment &mdash; interactive activities</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Easy access (ground floor) &mdash; mall is not crowded</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10007; Cons</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Many rooms but not spacious enough to hold a single meeting/event venue</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>LED walls not included &mdash; separate payment required</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Food &amp; entertainment must be arranged separately outside the venue</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Parking is inside the mall</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Breakdown</div>
+        <div class="detail-row"><span class="detail-key">Exclusive package rate</span><span class="detail-val">₱125,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Max capacity</span><span class="detail-val">200 pax</span></div>
+        <div class="detail-row"><span class="detail-key">12% VAT (if invoiced)</span><span class="detail-val">₱15,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">50% Down Payment (non-refundable)</span><span class="detail-val">₱62,500.00</span></div>
+        <div class="detail-row"><span class="detail-key">Remaining balance</span><span class="detail-val">₱62,500.00</span></div>
+        <div class="detail-row" style="border-top:1px solid #e2e8f0;padding-top:5px;margin-top:2px;">
+          <span class="detail-key" style="font-weight:700;">Balance settled</span>
+          <span class="detail-val">Immediately after event</span>
+        </div>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Inclusions</div>
+        <ul class="incl-list">
+          <li>5-hour exclusive access (weekday rate)</li>
+          <li>Sensory games</li>
+          <li>LED and 3D holographic displays</li>
+          <li>Light installations</li>
+          <li>9D ride experience</li>
+          <li>Premium Conrad Hotel address (S Maison)</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Terms &amp; Reminders</div>
+        <ul class="incl-list">
+          <li>Book at least <strong>1 month</strong> in advance</li>
+          <li>50% DP is <strong>non-refundable</strong>, due at least 2 weeks before event</li>
+          <li>Balance settled immediately after the visit</li>
+          <li>Cash, bank deposit, or bank transfer <strong>only</strong></li>
+          <li>Cancellation within 1 week = forfeiture of down payment</li>
+          <li>No refunds for no-shows or unused tickets</li>
+          <li>Parking fees for buses are NOT covered</li>
+        </ul>
+      </div>
+
+    </div>
+          </div>
+        </td>
+      </tr>
+      <tr class="row-highlight-green">
+        <td><span class="tag tag-museum">8</span></td>
+        <td>
+          <strong>Omniverse Museum</strong><br>
+          <span style="font-size:11px;color:#64748b;">Philippine Amusement &amp; Entertainment Corp.</span>
+        </td>
+        <td style="font-size:12px;">4/F Japan Town, Glorietta 2, Ayala Center, Makati City 1224</td>
+        <td class="price-cell price-high">₱1,680,000<br><span style="font-size:10px;font-weight:400;color:#64748b;">VAT inclusive</span></td>
+        <td style="font-weight:600;">₱865,000<br><span style="font-size:10px;font-weight:400;color:#64748b;">50% DP + ₱25k deposit</span></td>
+        <td style="font-weight:600;">₱25,000<br><span style="font-size:10px;font-weight:400;color:#64748b;">Refundable</span></td>
+        <td>5 hrs + FREE 1-hr museum tour</td>
+        <td style="font-size:12px;">Movie-themed; 50+ activities; FREE museum tour</td>
+        <td style="vertical-align:middle;padding:8px 10px;">
+          <button class="btn-toggle" style="color:#6b21a8;border-color:#6b21a8;" onclick="toggleDetail('8',this)">
+            Full Details <span class="arrow">&#9660;</span>
+          </button>
+        </td>
+      </tr>
+      <tr class="detail-expand-row" id="detail-8">
+        <td class="detail-expand-cell" colspan="9">
+          <div class="detail-panel" style="border-left:4px solid #6b21a8;">
+            <div class="card-body">
+
+      <div class="note-box note-green">
+        ✓ <strong>₱336,000 less than a:museum</strong> — plus a FREE 1-hour museum tour and 50+ interactive activities included.
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Pros &amp; Cons</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:5px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10003; Pros</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>FREE 1-hr museum tour for all guests &mdash; built-in activity</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>50+ interactive exhibits (Marvel, DC, Star Wars, anime, science)</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Food provided in the quotation &mdash; catering included</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">&#10007; Cons</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Pricey &mdash; among the highest-cost options</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Big rooms but displays can create congestion &mdash; hard to navigate</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>LED walls not included &mdash; separate payment required</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">&ndash;</span>Parking inside the mall &mdash; 4th floor with escalator only (long walk)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Breakdown</div>
+        <div class="detail-row"><span class="detail-key">Base rate (100 pax)</span><span class="detail-val">₱1,500,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">12% VAT</span><span class="detail-val">₱180,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Grand total (VAT incl.)</span><span class="detail-val">₱1,680,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">50% Down Payment</span><span class="detail-val">₱840,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Security deposit</span><span class="detail-val">₱25,000.00</span></div>
+        <div class="detail-row" style="border-top:1px solid #e2e8f0;padding-top:5px;margin-top:2px;">
+          <span class="detail-key" style="font-weight:700;">Initial outlay upon signing</span>
+          <span class="detail-val" style="font-size:14px;">₱865,000.00</span>
+        </div>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Inclusions</div>
+        <ul class="incl-list">
+          <li>5-hour exclusive event (1 PM – 6 PM)</li>
+          <li><strong>FREE 1-hour scheduled museum tour</strong></li>
+          <li>Movie-themed immersive adventure (day pass)</li>
+          <li>Immersive worlds, iconic sets &amp; rare collectibles</li>
+          <li>50+ interactive educational activities</li>
+          <li>Buffet dinner for 100 pax <em style="color:#9ca3af;">(optional)</em></li>
+          <li>Tables and chairs setup</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Available Add-Ons</div>
+        <ul class="addon-list">
+          <li>Early/extended hours: <strong>₱10,000/hr</strong> (discounted from ₱20,000)</li>
+          <li>Food cart (no power): <strong>₱1,500/cart</strong> (disc. from ₱5,000)</li>
+          <li>Food cart (with power): <strong>₱5,000/cart</strong> (disc. from ₱10,000)</li>
+          <li>Lights &amp; sounds: Waived ≤30 amps; <strong>+₱20,000</strong> if exceeded</li>
+          <li>Change of visuals: <strong>₱45,000–₱60,000</strong> (client provides visuals)</li>
+          <li>LED wall / Genset: May be required depending on area used</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Terms</div>
+        <ul class="incl-list">
+          <li>Full payment due <strong>2 weeks</strong> before event date</li>
+          <li>50% DP required to block the date</li>
+          <li>+5% surcharge for credit card payments</li>
+          <li>Checks not accepted on the day of the event</li>
+          <li>Security deposit refunded <strong>7 business days</strong> after event</li>
+          <li>Additional pax on event day must be settled before tour ends</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Details</div>
+        <div class="detail-row"><span class="detail-key">Payee</span><span class="detail-val" style="font-size:11px;">Philippine Amusement and Entertainment Corp</span></div>
+        <div class="detail-row"><span class="detail-key">Bank</span><span class="detail-val">BDO</span></div>
+        <div class="detail-row"><span class="detail-key">Account No.</span><span class="detail-val">0112 9800 6033</span></div>
+        <div class="detail-row"><span class="detail-key">Deposit slip to</span><span class="detail-val" style="font-size:11px;">omniversemuseum@amusements.global &amp; finance@amusements.global</span></div>
+      </div>
+
+    </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-museum">9</span></td>
+        <td>
+          <strong>a:museum</strong><br>
+          <span style="font-size:11px;color:#64748b;">Philippine Amusement &amp; Entertainment Corp.</span>
+        </td>
+        <td style="font-size:12px;">One Bonifacio High Street, BGC, Taguig City</td>
+        <td class="price-cell price-top">₱2,016,000<br><span style="font-size:10px;font-weight:400;color:#64748b;">VAT inclusive</span></td>
+        <td style="font-weight:600;">₱1,038,000<br><span style="font-size:10px;font-weight:400;color:#64748b;">50% DP + ₱30k deposit</span></td>
+        <td style="font-weight:600;">₱30,000<br><span style="font-size:10px;font-weight:400;color:#64748b;">Refundable</span></td>
+        <td>5 hours</td>
+        <td style="font-size:12px;">Immersive art experience; buffet optional</td>
+        <td style="vertical-align:middle;padding:8px 10px;">
+          <button class="btn-toggle" style="color:#6b21a8;border-color:#6b21a8;" onclick="toggleDetail('9',this)">
+            Full Details <span class="arrow">&#9660;</span>
+          </button>
+        </td>
+      </tr>
+      <tr class="detail-expand-row" id="detail-9">
+        <td class="detail-expand-cell" colspan="9">
+          <div class="detail-panel" style="border-left:4px solid #6b21a8;">
+            <div class="card-body">
+
+      <div class="detail-section">
+        <div class="detail-label">Pros &amp; Cons</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:5px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">✓ Pros</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Prestige BGC address — upscale setting befitting a corporate celebration</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Truly immersive art experience guests won't soon forget</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>Tables &amp; chairs setup included; flexible add-ons available</li>
+              <li style="display:flex;gap:5px;"><span style="color:#16a34a;font-weight:700;flex-shrink:0;">+</span>PAEC-operated (government-linked, established credibility)</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">✗ Cons</div>
+            <ul style="list-style:none;font-size:11.5px;color:#374151;display:flex;flex-direction:column;gap:3px;padding:0;margin:0;">
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">–</span>Most expensive option (₱2M+); ₱1.038M required on signing alone</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">–</span>Food NOT included by default — external caterer needed</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">–</span>Visual/lighting changes cost ₱45–60k extra</li>
+              <li style="display:flex;gap:5px;"><span style="color:#dc2626;font-weight:700;flex-shrink:0;">–</span>+5% surcharge for credit card payments</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Breakdown</div>
+        <div class="detail-row"><span class="detail-key">Base rate (100 pax)</span><span class="detail-val">₱1,800,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">12% VAT</span><span class="detail-val">₱216,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Grand total (VAT incl.)</span><span class="detail-val">₱2,016,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">50% Down Payment</span><span class="detail-val">₱1,008,000.00</span></div>
+        <div class="detail-row"><span class="detail-key">Security deposit</span><span class="detail-val">₱30,000.00</span></div>
+        <div class="detail-row" style="border-top:1px solid #e2e8f0;padding-top:5px;margin-top:2px;">
+          <span class="detail-key" style="font-weight:700;">Initial outlay upon signing</span>
+          <span class="detail-val" style="font-size:14px;">₱1,038,000.00</span>
+        </div>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Inclusions</div>
+        <ul class="incl-list">
+          <li>5-hour exclusive event (1 PM – 6 PM)</li>
+          <li>Buffet dinner for 100 pax <em style="color:#9ca3af;">(optional)</em></li>
+          <li>Tables and chairs setup</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Available Add-Ons</div>
+        <ul class="addon-list">
+          <li>Early/extended hours: <strong>₱10,000/hr</strong> (discounted from ₱20,000)</li>
+          <li>Food cart (no power): <strong>₱1,500/cart</strong> (disc. from ₱5,000)</li>
+          <li>Food cart (with power): <strong>₱5,000/cart</strong> (disc. from ₱10,000)</li>
+          <li>Lights &amp; sounds: Waived ≤30 amps; <strong>+₱20,000</strong> if exceeded</li>
+          <li>Change of visuals: <strong>₱45,000–₱60,000</strong> (client provides visuals)</li>
+          <li>LED wall / Genset: May be required depending on area used</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Terms</div>
+        <ul class="incl-list">
+          <li>Full payment due <strong>2 weeks</strong> before event date</li>
+          <li>50% DP required to block the date</li>
+          <li>+5% surcharge for credit card payments</li>
+          <li>Checks honored only if paid 7 days before the event</li>
+          <li>Security deposit refunded <strong>7 business days</strong> after event</li>
+          <li>Additional pax on event day must be settled before tour ends</li>
+        </ul>
+      </div>
+
+      <hr class="card-divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Payment Details</div>
+        <div class="detail-row"><span class="detail-key">Payee</span><span class="detail-val" style="font-size:11px;">Philippine Amusement and Entertainment Corporation</span></div>
+        <div class="detail-row"><span class="detail-key">Bank</span><span class="detail-val">BDO</span></div>
+        <div class="detail-row"><span class="detail-key">Account No.</span><span class="detail-val">0112 9800 6696</span></div>
+        <div class="detail-row"><span class="detail-key">Deposit slip to</span><span class="detail-val" style="font-size:11px;">ella.paec@gmail.com</span></div>
+      </div>
+
+    </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>>
+    </tbody>
+  </table>
+</div>
+
+
+
+<!-- FOOTER -->
+<div class="page-footer">
+  Infosoft Consulting Corporation &nbsp;|&nbsp; Customers&#39; Day 2026 &nbsp;|&nbsp; Venue Comparison
+</div>
+
+<script>
+function toggleDetail(id, btn) {
+  var row = document.getElementById('detail-' + id);
+  var isOpen = row.classList.contains('open');
+  document.querySelectorAll('.detail-expand-row.open').forEach(function(r){ r.classList.remove('open'); });
+  document.querySelectorAll('.btn-toggle.open').forEach(function(b){ b.classList.remove('open'); });
+  if (!isOpen) {
+    row.classList.add('open');
+    btn.classList.add('open');
+    setTimeout(function(){ btn.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 50);
+  }
+}
+</script>
+</body>
+</html>                                                                                                                                                                                                           
